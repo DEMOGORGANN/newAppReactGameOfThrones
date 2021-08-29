@@ -5,11 +5,7 @@ import ErrorInfn from "./../ErrorsItem/Error";
 import Spinner from "./../Spinner/Spinner";
 
 export default class RandomChar extends Component {
-  constructor(props) {
-    super();
-    this.UpdateCharset();
-  }
-  charset = new GotService();
+  gotService = new GotService();
   state = {
     char: {},
     loading: true,
@@ -23,6 +19,15 @@ export default class RandomChar extends Component {
     });
   };
 
+  componentDidMount() {
+    this.UpdateCharset();
+    this.idTimer = setInterval(this.UpdateCharset, 1500);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.idTimer);
+  }
+
   onCharError = () => {
     this.setState({
       error: true,
@@ -30,13 +35,13 @@ export default class RandomChar extends Component {
     });
   };
 
-  UpdateCharset() {
+  UpdateCharset = () => {
     const id = Math.floor(Math.random() * 140 + 25);
-    this.charset
+    this.gotService
       .getCharacter(id)
       .then(this.onCharLoaded)
       .catch(this.onCharError);
-  }
+  };
 
   render() {
     const { char, loading, error } = this.state;
